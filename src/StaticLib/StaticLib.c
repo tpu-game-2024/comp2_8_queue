@@ -37,8 +37,25 @@ bool enqueue(QUEUE* q, int val)
 	// ToDo: valのデータをキューに追加します
 	// 上手くいかない場合にはfalseを返します
 	// メモリを使い切ったら先頭アドレスに戻って追加して下さい
+	if (q == NULL) return false;
 
-	return false;
+	if (countQueueableElements(q) == 0) {
+		return false;
+	}
+
+	if (q->tail == q->memory_end) {
+		if (q->memory_begin != q->head) {
+			*q->memory_begin = val;
+			q->tail = q->memory_begin + 1;
+		}
+		else
+			return false;
+	}
+	else {
+		*q->tail = val;
+		q->tail++;
+	}
+	return true;
 }
 
 
@@ -48,24 +65,55 @@ bool enqueue_array(QUEUE* q, int* addr, int num)
 	// ToDo: addrからnum個のデータをキューに追加します
 	// 上手くいかない場合にはfalseを返します
 	// メモリを使い切ったら先頭アドレスに戻って追加して下さい
+	if (q == NULL) return false;
+	if (addr == NULL)return false;
+	if (num <= 0) return false;
 
-	return false;
+	if (num > countQueueableElements(q)) return false;
+
+	for (int i = 0; i < num; i++) {
+		if (!enqueue(q, addr[i]))
+			return false;
+
+	}
+	return true;
 }
 
 // キューから一つの要素を取り出す(不具合時は0を返す)
 int dequeue(QUEUE* q)
 {
 	// ToDo: 先頭のデータを返します
+	if (q == NULL) return 0;
 
-	return 0;
+	if (countQueuedElements(q) == 0)
+		return 0;
+
+	int a = *q->head;
+	q->head++;
+	if (q->head == q->memory_end)
+		q->head = q->memory_begin;
+
+	return a;
+
 }
 
 // addrにキューからnumの要素を取り出す。取り出せた個数を返す
 int dequeue_array(QUEUE* q, int* addr, int num)
 {
 	// ToDo: 先頭からnum個のデータをaddrに格納します
+	if (q == NULL) return 0;
+	if (num <= 0) return 0;
 
-	return 0;
+
+	int i;
+	for (i = 0; i < num; i++) {
+		if (countQueuedElements(q) == 0) {
+			break;
+		}
+		addr[i] = dequeue(q);
+	}
+
+	return i;
 }
 
 // キューが空かどうかを調べる
@@ -89,7 +137,7 @@ int countQueuedElements(const QUEUE* q)
 	if (q == NULL || q->memory_begin == NULL) return 0;
 
 	int max_counts = getMaxCount(q);
-	return (q->head + max_counts - q->tail) % max_counts;
+	return (max_counts - (q->head + max_counts - q->tail)) % max_counts;
 }
 
 // 挿入可能なデータ数を得る
