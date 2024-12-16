@@ -7,7 +7,6 @@
 実装して、ユニットテストが通るようにしてください。
 
 [![MS Build and Test](https://github.com/MikanKanjuku/comp2_8_queue/actions/workflows/ms_test.yml/badge.svg)](https://github.com/MikanKanjuku/comp2_8_queue/actions/workflows/ms_test.yml)
-
 （このファイルの上の行の[tpu-game-2024]の部分(2か所)を自分のアカウント名に修正してください）
 
 
